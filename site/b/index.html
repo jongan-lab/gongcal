@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="공기업 채용 전형 일정을 한눈에 보는 달력">
+<title>공기업 채용 달력</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='5' width='26' height='24' rx='4' fill='%231C4E8A'/%3E%3Crect x='3' y='5' width='26' height='7' rx='3' fill='%2316406F'/%3E%3Ccircle cx='16' cy='20' r='4' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../common.css">
+<style>
+/* B안: 일정 목록 중심. 폰에서는 하단 탭(일정·달력·기업), 넓은 화면은 왼쪽 미니 달력 + 오른쪽 타임라인 */
+body{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 72px)}
+.top{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 10px) 0 8px}
+.top-in{max-width:1180px;margin:0 auto;padding:0 16px}
+.row1{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.row1 h1{font-size:19px;margin:0;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.stamp{font-size:12px;color:var(--ink2);white-space:nowrap;margin-left:auto}
+.row2{display:flex;gap:8px}
+.searchbox{flex:1;display:flex;align-items:center;gap:6px;border:0;background:var(--soft);border-radius:12px;padding:0 12px;height:42px;min-width:0}
+.searchbox svg{width:18px;height:18px;color:var(--ink2);flex:0 0 auto}
+.searchbox input{border:0;background:none;outline:none;flex:1;min-width:0;height:100%}
+.fbtn{position:relative;border:0;background:var(--soft);width:42px;height:42px;border-radius:12px}
+.badge{position:absolute;top:-4px;right:-4px;background:var(--sun);color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:17px;height:17px;line-height:17px;text-align:center;display:none}
+.badge.show{display:block}
+.quick{display:flex;gap:6px;overflow-x:auto;padding:10px 16px 2px;margin:0 -16px;scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.quick .chip{background:var(--soft);border-color:transparent;font-weight:600}
+.quick .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:14px 16px 24px}
+.layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+.layout>main{min-width:0}
+.side{position:sticky;top:150px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
+.seg{display:flex;gap:18px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.seg button{border:0;background:none;padding:8px 2px;font-weight:700;font-size:15px;color:var(--ink2);border-bottom:2px solid transparent;margin-bottom:-1px}
+.seg button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+
+/* 다가오는 필기 큰 카드 */
+.secth{font-size:15px;font-weight:700;margin:0 0 10px;display:flex;align-items:baseline;gap:8px}
+.secth small{font-size:12.5px;color:var(--ink2);font-weight:500}
+.hero{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin-bottom:18px;scrollbar-width:thin}
+.hc{flex:0 0 auto;width:min(72vw,220px);scroll-snap-align:start;border:0;border-radius:16px;padding:14px;text-align:left;color:#fff;background:linear-gradient(140deg,var(--s-exam),color-mix(in srgb,var(--s-exam) 70%,#000))}
+.hc .n{font-size:30px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.hc .c{font-weight:700;font-size:15px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc .d{font-size:12.5px;opacity:.9}
+.hc.dl{background:linear-gradient(140deg,var(--s-docEnd),color-mix(in srgb,var(--s-docEnd) 70%,#000))}
+
+/* 날짜 타임라인 */
+.rangebtns{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tday{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;margin-bottom:14px}
+.tdate{text-align:center;padding-top:4px;position:sticky;top:160px;align-self:start}
+.tdate .dnum{font-size:22px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.tdate .dw{font-size:12px;color:var(--ink2);font-weight:600}
+.tdate .dl{display:inline-block;margin-top:4px;font-size:11px;font-weight:700;border-radius:6px;padding:0 5px;background:var(--soft);color:var(--ink2)}
+.tdate.today .dl{background:var(--sun);color:#fff}
+.tdate.sun .dnum,.tdate.sun .dw{color:var(--sun)} .tdate.sat .dnum,.tdate.sat .dw{color:var(--sat)}
+.mhead{font-size:13px;font-weight:700;color:var(--ink2);margin:6px 0 10px;padding-left:62px}
+
+/* 미니 달력 */
+.mcal .mh{display:flex;align-items:center;gap:4px;margin-bottom:8px}
+.mcal .mh b{font-size:16px;margin-right:auto}
+.mcal .nav{border:0;background:var(--soft);border-radius:8px;width:34px;height:34px;font-size:16px;padding:0}
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px}
+.mgrid .w{font-size:11.5px;text-align:center;color:var(--ink2);font-weight:600;padding:2px 0 4px}
+.mgrid .w.sun{color:var(--sun)} .mgrid .w.sat{color:var(--sat)}
+.md{border:0;background:none;border-radius:10px;padding:4px 0 5px;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:46px;font-variant-numeric:tabular-nums;font-size:14px;font-weight:600}
+.md:hover{background:var(--soft)}
+.md.out{opacity:.35}
+.md.sun{color:var(--sun)} .md.sat{color:var(--sat)}
+.md.today span{background:var(--soft);border-radius:999px;min-width:26px;box-shadow:inset 0 0 0 1.5px var(--sun)}
+.md.sel{background:var(--ink);color:var(--panel)}
+.md.sel.today span{background:none;box-shadow:none;text-decoration:underline 2px var(--sun);text-underline-offset:3px}
+.md .ds{display:flex;gap:2px;height:6px}
+.md .ds i{width:5px;height:5px;border-radius:50%;background:var(--c)}
+.daypanel{margin-top:14px}
+.daypanel h2{font-size:15px;margin:0 0 8px;display:flex;gap:8px;align-items:baseline}
+.daypanel h2 small{font-size:12.5px;color:var(--ink2);font-weight:600}
+.note{font-size:12.5px;color:var(--ink2);margin-bottom:10px}
+
+/* 하단 탭바 (폰) */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--panel);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 6px;font-size:11.5px;font-weight:600;color:var(--ink2);min-height:58px}
+.tabbar svg{width:22px;height:22px}
+.tabbar button[aria-selected="true"]{color:var(--brand)}
+
+@media (min-width:900px){
+  body{padding-bottom:24px}
+  .tabbar,.fbtn{display:none}
+  .row2{max-width:520px}
+  .toast{bottom:24px}
+}
+@media (max-width:899px){
+  .layout{grid-template-columns:1fr}
+  .side,.seg{display:none}
+  .tdate{top:150px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="row1"><h1>공기업 채용 달력</h1><span class="stamp" id="stamp"></span></div>
+    <div class="row2">
+      <label class="searchbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="sr">기업 검색</span><input id="q" type="search" placeholder="기업 검색 (예: 한국전력)" autocomplete="off"></label>
+      <button class="iconbtn fbtn" id="fbtn" aria-label="필터"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span class="badge" id="fbadge"></span></button>
+    </div>
+    <div class="quick" id="quick" aria-label="빠른 필터"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="notice" id="notice" role="status"></div>
+  <div class="layout">
+    <aside class="side">
+      <div class="card mcal" id="sidecal"></div>
+      <div class="card" id="side" aria-label="필터"></div>
+    </aside>
+    <main>
+      <div class="seg" role="tablist">
+        <button role="tab" data-tab="list">일정</button>
+        <button role="tab" data-tab="co">기업별 현황</button>
+      </div>
+      <div id="pane"></div>
+    </main>
+  </div>
+</div>
+
+<nav class="tabbar" role="tablist" aria-label="화면 전환">
+  <button role="tab" data-tab="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>일정</button>
+  <button role="tab" data-tab="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>달력</button>
+  <button role="tab" data-tab="co"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14M9 21v-6h6v6M9 10h.01M15 10h.01"/></svg>기업</button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="sTitle">
+  <div class="grab"></div>
+  <div class="shead"><div><h2 id="sTitle"></h2><div class="meta" id="sMeta"></div></div><button class="x" id="sClose" aria-label="닫기">×</button></div>
+  <div class="sbody" id="sBody"></div>
+</section>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="../common.js"></script>
+<script>
+(function(){
+"use strict";
+var GC=window.GC,el=GC.el,$=GC.$,prefs=GC.prefs;
+prefs.tabB=prefs.tabB||"list";
+var st={month:null,sel:GC.todayStr(),days:30};
+var mq=window.matchMedia("(max-width:899px)");
+function isMobile(){return mq.matches;}
+mq.addEventListener("change",function(){GC.render();});
+function tab(){return !isMobile()&&prefs.tabB==="cal"?"list":prefs.tabB;}
+
+function renderQuick(){
+  var box=$("quick");box.textContent="";
+  function chip(label,pressed,fn){var b=el("button","chip",label);b.setAttribute("aria-pressed",pressed?"true":"false");b.onclick=fn;box.appendChild(b);}
+  chip("전체",GC.state.group==null,function(){GC.state.group=null;GC.render();});
+  GC.GROUPS.forEach(function(g,i){chip(g.label,GC.state.group===i,function(){GC.state.group=GC.state.group===i?null:i;GC.render();});});
+  chip("★ 관심 기업",GC.state.starOnly,function(){GC.state.starOnly=!GC.state.starOnly;prefs.starOnly=GC.state.starOnly;GC.savePrefs();GC.render();});
+}
+
+/* 미니 달력: 날짜마다 색 점, 누르면 그날 일정 */
+function miniCal(box,onPick){
+  var t=GC.todayStr();if(!st.month)st.month=t.slice(0,7);
+  var y=+st.month.slice(0,4),m=+st.month.slice(5,7);
+  box.textContent="";var h=el("div","mh");h.appendChild(el("b","",y+"년 "+m+"월"));
+  var p=el("button","nav","‹");p.setAttribute("aria-label","이전 달");p.onclick=function(){shift(-1);};
+  var n=el("button","nav","›");n.setAttribute("aria-label","다음 달");n.onclick=function(){shift(1);};
+  var tb=el("button","btn","오늘");tb.onclick=function(){st.month=null;st.sel=t;GC.render();};
+  h.appendChild(p);h.appendChild(n);h.appendChild(tb);box.appendChild(h);
+  var g=el("div","mgrid"),byDay=GC.eventsByDay();
+  GC.DOW.forEach(function(d,i){g.appendChild(el("div","w"+(i===0?" sun":i===6?" sat":""),d));});
+  var first=new Date(y,m-1,1),start=new Date(first);start.setDate(1-first.getDay());
+  var last=new Date(y,m,0),end=new Date(last);end.setDate(last.getDate()+(6-last.getDay()));
+  for(var d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
+    (function(s,dw,inM){
+      var list=byDay[s]||[],b=el("button","md"+(inM?"":" out")+(dw===0?" sun":dw===6?" sat":"")+(s===t?" today":"")+(s===st.sel&&isMobile()?" sel":""));
+      b.setAttribute("aria-label",GC.fmtLong(s)+" 일정 "+list.length+"건");
+      b.appendChild(el("span","",String(+s.slice(8))));
+      var ds=el("span","ds"),seenK={};
+      list.forEach(function(e){var c=GC.SMAP[e.k].color;if(seenK[c]||Object.keys(seenK).length>=3)return;seenK[c]=1;var i=el("i");i.style.setProperty("--c",GC.cssVar(c));ds.appendChild(i);});
+      b.appendChild(ds);b.onclick=function(){onPick(s,list);};g.appendChild(b);
+    })(GC.ymd(d),d.getDay(),d.getMonth()===m-1);
+  }
+  box.appendChild(g);
+}
+function shift(n){
+  var y=+st.month.slice(0,4),m=+st.month.slice(5,7)-1+n,d=new Date(y,m,1);
+  st.month=d.getFullYear()+"-"+GC.pad(d.getMonth()+1);
+  var t=GC.todayStr();st.sel=t.slice(0,7)===st.month?t:st.month+"-01";GC.render();
+}
+
+function renderList(pane){
+  var t=GC.todayStr();
+  if(!GC.data){pane.appendChild(GC.emptyBox("일정을 불러오고 있어요","잠시만 기다려 주세요."));return;}
+  var hero=GC.upcomingExams(60).map(function(r){return {k:"exam",date:r.d.exam,row:r};})
+    .concat(GC.deadlines(7).map(function(r){return {k:"docEnd",date:r.d.docEnd,row:r};}))
+    .sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;}).slice(0,12);
+  if(hero.length&&GC.state.group==null){
+    var hh=el("h2","secth","곧 다가오는 시험·마감");hh.appendChild(el("small","","필기 60일 · 서류 7일 이내"));pane.appendChild(hh);
+    var hr=el("div","hero");
+    hero.forEach(function(it){
+      var b=el("button","hc"+(it.k==="docEnd"?" dl":""));
+      b.appendChild(el("div","n",GC.dlabel(GC.diffDays(t,it.date))));
+      b.appendChild(el("div","c",GC.nameOf(it.row)));
+      b.appendChild(el("div","d",GC.SMAP[it.k].label+" · "+GC.fmtMD(it.date)+(it.k==="exam"&&it.row.type?" · "+it.row.type:"")));
+      b.onclick=function(){GC.openRow(it.row);};hr.appendChild(b);
+    });
+    pane.appendChild(hr);
+  }
+  var h2=el("h2","secth","다가오는 일정");pane.appendChild(h2);
+  var rb=el("div","rangebtns");
+  [[7,"1주"],[30,"30일"],[90,"90일"]].forEach(function(o){
+    var b=el("button","chip",o[1]+" 안");b.setAttribute("aria-pressed",st.days===o[0]?"true":"false");
+    b.onclick=function(){st.days=o[0];GC.render();};rb.appendChild(b);});
+  pane.appendChild(rb);
+  var until=GC.addDays(t,st.days),evs=GC.visibleEvents().filter(function(e){return e.date>=t&&e.date<=until;});
+  if(!evs.length){pane.appendChild(GC.emptyBox("이 기간에는 일정이 없어요","기간을 늘리거나 필터를 바꿔 보세요."));return;}
+  var cur=null,curM=null,list=null;
+  evs.forEach(function(e){
+    if(e.date.slice(0,7)!==curM){curM=e.date.slice(0,7);pane.appendChild(el("div","mhead",(+curM.slice(5))+"월"));}
+    if(e.date!==cur){
+      cur=e.date;var dt=GC.parseYmd(cur),dw=dt.getDay(),n=GC.diffDays(t,cur),row=el("div","tday");
+      var dd=el("div","tdate"+(dw===0?" sun":dw===6?" sat":"")+(n===0?" today":""));
+      dd.appendChild(el("div","dnum",String(dt.getDate())));dd.appendChild(el("div","dw",GC.DOW[dw]));
+      dd.appendChild(el("span","dl",n===0?"오늘":GC.dlabel(n)));
+      list=el("div","daylist");row.appendChild(dd);row.appendChild(list);pane.appendChild(row);
+    }
+    list.appendChild(GC.evCard(e,{dday:false}));
+  });
+}
+function renderCalTab(pane){
+  var c=el("div","card mcal");pane.appendChild(c);
+  miniCal(c,function(s){st.sel=s;if(s.slice(0,7)!==st.month)st.month=s.slice(0,7);GC.render();});
+  var t=GC.todayStr(),dp=el("section","daypanel"),h=el("h2","",GC.fmtLong(st.sel)),n=GC.diffDays(t,st.sel);
+  h.appendChild(el("small","",n===0?"오늘":GC.dlabel(n)));dp.appendChild(h);
+  var list=GC.eventsByDay()[st.sel]||[];
+  if(!GC.data)dp.appendChild(el("div","empty-mini","일정을 불러오고 있어요."));
+  else if(!list.length)dp.appendChild(el("div","empty-mini","이 날은 일정이 없어요. 점이 있는 날짜를 눌러 보세요."));
+  else{var w=el("div","daylist");list.forEach(function(e){w.appendChild(GC.evCard(e,{dday:false}));});dp.appendChild(w);}
+  pane.appendChild(dp);
+}
+function renderCo(pane){
+  if(!GC.data){pane.appendChild(GC.emptyBox("일정을 불러오고 있어요","잠시만 기다려 주세요."));return;}
+  var rows=GC.activeRows();
+  pane.appendChild(el("div","note","진행 중이거나 2주 안에 끝난 공고 "+rows.length+"건 · 다음 일정이 가까운 순 · ☆로 관심 기업 표시"));
+  if(!rows.length)pane.appendChild(GC.emptyBox("조건에 맞는 진행 중 공고가 없어요","검색어나 필터를 바꿔 보세요."));
+  var g=el("div","cogrid");rows.forEach(function(r){g.appendChild(GC.coCard(r));});pane.appendChild(g);
+}
+
+function renderBadge(){var n=GC.filtersActive(),b=$("fbadge");b.textContent=n;b.classList.toggle("show",n>0);}
+GC.render=function(){
+  var cur=tab();
+  $("stamp").textContent=GC.stampText();
+  renderQuick();renderBadge();GC.renderCount();
+  document.querySelectorAll("[data-tab]").forEach(function(b){b.setAttribute("aria-selected",b.dataset.tab===cur?"true":"false");});
+  if(!isMobile())miniCal($("sidecal"),function(s,list){GC.openDay(s,list);});
+  var pane=$("pane");pane.textContent="";
+  if(cur==="co")renderCo(pane);else if(cur==="cal")renderCalTab(pane);else renderList(pane);
+};
+GC.onData=function(){GC.buildFilters($("side"));};
+
+document.querySelectorAll("[data-tab]").forEach(function(b){b.onclick=function(){prefs.tabB=b.dataset.tab;GC.savePrefs();GC.render();window.scrollTo(0,0);};});
+$("q").addEventListener("input",function(e){GC.state.q=e.target.value.trim();GC.render();});
+$("fbtn").onclick=GC.openFilters;
+GC.buildFilters($("side"));
+GC.start();
+})();
+</script>
+</body>
+</html>
