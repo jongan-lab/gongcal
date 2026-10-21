@@ -51,6 +51,11 @@ jobs:
             git push
           fi
 
+      - name: 공용 파일에 배포 버전 붙이기 (브라우저 캐시 어긋남 방지)
+        run: |
+          V=$(git rev-parse --short HEAD)
+          find site -name '*.html' -exec sed -i "s/__V__/$V/g" {} +
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
