@@ -32,7 +32,12 @@ jobs:
       - name: 노션에서 데이터 가져오기
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: node scripts/sync-notion.mjs
+        run: |
+          if [ -z "$NOTION_TOKEN" ]; then
+            echo "::warning::NOTION_TOKEN 시크릿이 없어 노션 동기화를 건너뛰고 기존 data.json으로 배포합니다."
+          else
+            node scripts/sync-notion.mjs
+          fi
 
       - name: 바뀐 데이터 저장
         run: |
