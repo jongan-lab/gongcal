@@ -1,7 +1,14 @@
 /* 두 레이아웃(A·B)이 함께 쓰는 데이터·필터·상세 시트 로직. 화면 배치는 각 index.html이 맡는다. */
+// 스크립트 오류가 나도 빈 화면 대신 안내가 보이게 한다 (구형 폰·앱 내 브라우저 대비)
+window.addEventListener("error",function(){
+  var n=document.getElementById("notice");
+  if(n&&!n.classList.contains("show")){n.textContent="이 브라우저에서 화면을 그리지 못했어요. Chrome·Safari·삼성 인터넷에서 열거나 앱을 최신 버전으로 업데이트해 주세요.";n.className="notice show";}
+});
 (function(){
 "use strict";
 var GC=window.GC={};
+// 구형 Safari(14 미만)는 MediaQueryList.addEventListener가 없다
+GC.onMedia=function(mq,fn){if(mq.addEventListener)mq.addEventListener("change",fn);else if(mq.addListener)mq.addListener(fn);};
 var DATA_URL=new URL("data.json",document.currentScript.src).href;
 var PREF_KEY="gongcal-pub:prefs:v1", SEEN_KEY="gongcal-pub:seen:v1";
 var REFRESH_MS=15*60*1000;

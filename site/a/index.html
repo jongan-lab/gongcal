@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="../common.css">
 <style>
 /* A안: 달력 중심. 폰에서는 점으로 표시한 달력 + 고른 날의 일정 목록 */
-.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px}
 .top-in{max-width:1360px;margin:0 auto;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap}
 .brand{display:flex;align-items:baseline;gap:10px;flex:1 1 auto;min-width:0}
 .brand h1{font-size:19px;margin:0;font-weight:700;white-space:nowrap;letter-spacing:-.01em}
@@ -146,7 +146,7 @@ prefs.tabA=prefs.tabA||"cal";
 var st={month:null,sel:GC.todayStr(),agendaDays:30};
 var mq=window.matchMedia("(max-width:899px)");
 function isMobile(){return mq.matches;}
-mq.addEventListener("change",function(){GC.render();});
+GC.onMedia(mq,function(){GC.render();});
 
 /* 놓치면 안 되는 일정: 60일 안 필기 + 7일 안 서류 마감 */
 function renderHl(){
