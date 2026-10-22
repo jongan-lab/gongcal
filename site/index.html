@@ -16,12 +16,19 @@ try{var v=(JSON.parse(localStorage.getItem("gongcal-pub:prefs:v1")||"{}").viewA)
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="common.css?v=__V__">
+<script>
+// 디자인 시안 미리보기: ?theme=1|2|3 이면 themes/tN.css 를 덧입힌다
+(function(){var m=location.search.match(/[?&]theme=([1-9])/);if(!m)return;
+  document.documentElement.setAttribute("data-skin","t"+m[1]);
+  document.write('<link rel="stylesheet" href="themes/t'+m[1]+'.css?v=__V__">');})();
+</script>
 <style>
+.logo{display:none}
 /* A안: 달력 중심. 폰에서는 점으로 표시한 달력 + 고른 날의 일정 목록 */
 .top{position:sticky;top:0;z-index:20;background:var(--bg);background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px}
 .top-in{max-width:1360px;margin:0 auto;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap}
 .brand{flex:1 1 auto;min-width:0}
-.brand .tl{display:flex;align-items:baseline;gap:10px}
+.brand .brow{display:flex;align-items:baseline;gap:10px}
 .brand h1{font-size:19px;margin:0;font-weight:700;white-space:nowrap;letter-spacing:-.01em}
 .caution{margin:3px 0 0;font-size:12.5px;line-height:1.45;color:var(--ink2);display:flex;gap:4px;word-break:keep-all}
 .caution b{color:var(--s-examRes);font-weight:700;flex:0 0 auto}
@@ -121,7 +128,7 @@ html.m .wrap,html.m .top-in{max-width:560px}
 <header class="top">
   <div class="top-in">
     <div class="brand">
-      <div class="tl"><h1>공기업 채용 달력</h1><span class="stamp" id="stamp"></span></div>
+      <div class="brow"><span class="logo" aria-label="마킹PT">마킹<b>PT</b></span><h1>공기업 채용 달력</h1><span class="stamp" id="stamp"></span></div>
       <p class="caution"><b aria-hidden="true">※</b><span>채용공고 기준으로 전형별 날짜를 정확히 공개하지 않은 기업의 일정은 임의로 설정되었을 수 있으니 반드시 채용공고도 같이 체크하세요.</span></p>
     </div>
     <div class="tools">

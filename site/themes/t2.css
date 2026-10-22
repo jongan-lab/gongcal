@@ -1,0 +1,66 @@
+/* 시안 2 · 블랙 & 골드 — 홈페이지 '합격 실적' 섹션의 검정 배경 + 골드 숫자 */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+:root[data-skin="t2"]{
+  --bg:#0E0E0E; --panel:#171717; --ink:#F3EFE4; --ink2:#9C978B; --line:#2C2A26; --soft:#1F1E1B;
+  --brand:#E9B949; --brandSoft:#2E2717; --sun:#FF6B5E; --sat:#86A9FF; --today:#2A2414; --sel:#E9B949;
+  --gold:#E9B949;
+  --s-doc:#8E8A80; --s-docEnd:#6FA3FF; --s-guide:#6F6B63; --s-exam:#FF6B5E; --s-examRes:#F2B544;
+  --s-int1:#4CC38A; --s-int1Res:#45BCC4; --s-int2:#B494FF; --s-final:#F07DCB;
+  --shadow:none; --r:10px;
+  color-scheme:dark;
+}
+[data-skin="t2"] body{font-family:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:#0E0E0E}
+
+/* 헤더 */
+[data-skin="t2"] .top{background:#0E0E0E;border-bottom:1px solid #2C2A26;-webkit-backdrop-filter:none;backdrop-filter:none}
+[data-skin="t2"] .logo{display:inline-flex;white-space:nowrap;flex:0 0 auto;align-items:baseline;font-weight:900;font-size:16px;letter-spacing:-.04em;color:var(--ink);border:1px solid var(--gold);border-radius:4px;padding:0 7px;margin-right:2px;align-self:center;line-height:24px}
+[data-skin="t2"] .logo b{color:var(--gold);font-style:italic;margin-left:1px}
+[data-skin="t2"] .brand h1{font-weight:800;letter-spacing:-.02em}
+[data-skin="t2"] .caution b{color:var(--gold)}
+[data-skin="t2"] .searchbox{background:#171717;border-color:#2C2A26;border-radius:8px}
+[data-skin="t2"] .searchbox input::placeholder{color:#6F6B63}
+[data-skin="t2"] .iconbtn,[data-skin="t2"] .btn{background:#171717;border-color:#2C2A26;border-radius:8px}
+[data-skin="t2"] .vbtn{border-color:var(--gold);color:var(--gold)}
+
+/* 놓치면 안 되는 일정: 골드 숫자 보드 */
+[data-skin="t2"] .hl h2{font-size:12px;letter-spacing:.12em;color:var(--gold);font-weight:700}
+[data-skin="t2"] .hlc{background:#171717;border:1px solid #2C2A26;border-top:2px solid var(--c);border-radius:8px;box-shadow:none}
+[data-skin="t2"] .hlc .n{font-size:30px;font-weight:800;color:var(--gold);letter-spacing:-.02em}
+[data-skin="t2"] .hlc .k{color:var(--c)}
+[data-skin="t2"] .hlc .c{color:var(--ink);font-weight:700}
+
+/* 패널·탭: 밑줄 탭 */
+[data-skin="t2"] .side,[data-skin="t2"] main.view{background:#141414;border:1px solid #232220;box-shadow:none}
+[data-skin="t2"] .seg{background:none;border:0;border-bottom:1px solid #2C2A26;border-radius:0;padding:0;gap:18px;justify-content:flex-start}
+[data-skin="t2"] .seg button{flex:0 0 auto;border-radius:0;padding:10px 2px;border-bottom:2px solid transparent;margin-bottom:-1px}
+[data-skin="t2"] .seg button[aria-selected="true"]{background:none;box-shadow:none;color:var(--gold);border-bottom-color:var(--gold)}
+[data-skin="t2"] .calhead .ym{font-size:26px;font-weight:800;color:var(--ink)}
+
+/* 달력 */
+[data-skin="t2"] .cal{border-color:#262522;border-radius:6px}
+[data-skin="t2"] .dow{background:#121212;color:#7C776C;letter-spacing:.06em}
+[data-skin="t2"] .cell{border-color:#262522}
+[data-skin="t2"] .cell:hover{background:#1C1B19}
+[data-skin="t2"] .cell.out{background:#111}
+[data-skin="t2"] .cell.today{background:#1E1A10}
+[data-skin="t2"] .cell.today .dn span{background:var(--gold);color:#0E0E0E}
+[data-skin="t2"] .cell.sel{box-shadow:inset 0 0 0 1.5px var(--gold)}
+[data-skin="t2"] .ec:hover{background:#232220}
+[data-skin="t2"] .ec.exam{background:rgba(255,107,94,.12)}
+[data-skin="t2"] .daypanel h2,[data-skin="t2"] .agh{font-weight:800}
+
+/* 카드·칩·버튼 */
+[data-skin="t2"] .evcard,[data-skin="t2"] .cocard{background:#171717;border-color:#2C2A26;border-radius:8px}
+[data-skin="t2"] .chip{background:#171717;border-color:#2C2A26;border-radius:6px}
+[data-skin="t2"] .chip[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0E0E0E}
+[data-skin="t2"] .dlinks a{background:var(--gold);color:#0E0E0E;border-radius:6px}
+[data-skin="t2"] .dlinks a.sec{background:#2E2717;color:var(--gold)}
+[data-skin="t2"] .tag{background:#2E2717;color:var(--gold)}
+[data-skin="t2"] .stages input,[data-skin="t2"] .toggle input{accent-color:var(--gold)}
+[data-skin="t2"] .badge{background:var(--gold);color:#0E0E0E}
+[data-skin="t2"] .sheet{background:#141414;border-radius:12px 12px 0 0}
+@media (min-width:900px){[data-skin="t2"] .sheet{border-radius:0;border-left:1px solid #2C2A26}}
+[data-skin="t2"] .toast{background:var(--gold);color:#0E0E0E}
+[data-skin="t2"].m main.view{border:0;background:none}
+[data-skin="t2"].m .calbox,[data-skin="t2"].m .listbox{background:#141414;border:1px solid #232220;box-shadow:none}
