@@ -17,10 +17,10 @@ try{var v=(JSON.parse(localStorage.getItem("gongcal-pub:prefs:v1")||"{}").viewA)
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="common.css?v=__V__">
 <script>
-// 디자인 시안 미리보기: ?theme=1|2|3 이면 themes/tN.css 를 덧입힌다
-(function(){var m=location.search.match(/[?&]theme=([1-9])/);if(!m)return;
-  document.documentElement.setAttribute("data-skin","t"+m[1]);
-  document.write('<link rel="stylesheet" href="themes/t'+m[1]+'.css?v=__V__">');})();
+// 기본 디자인은 시안 4(앱 임베드형). ?theme=1|2|3 으로 다른 시안을 미리 볼 수 있다
+(function(){var m=location.search.match(/[?&]theme=([1-9])/),t=m?m[1]:"4";
+  document.documentElement.setAttribute("data-skin","t"+t);
+  document.write('<link rel="stylesheet" href="themes/t'+t+'.css?v=__V__">');})();
 </script>
 <style>
 .logo,.hstats{display:none}
